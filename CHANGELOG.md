@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.1+26.3 - 2026-09-26
+
+### Fixed
+
+- Fixed battery percentage reporting on Windows.
+
+### Added
+
+- Added a draggable battery HUD position editor, opened with `/bsiedit`.
+
 ## 1.2.0+26.3 - 2026-09-17
 
 ### Added
