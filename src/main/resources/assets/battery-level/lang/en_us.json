@@ -1,4 +1,6 @@
 {
+  "screen.battery-level.hud-editor.instruction": "Drag the battery indicator. Press Esc to save.",
+  "screen.battery-level.hud-editor.title": "Move battery indicator",
   "text.autoconfig.batterystatusinfo.category.alerts": "Alerts",
   "text.autoconfig.batterystatusinfo.category.general": "General",
   "text.autoconfig.batterystatusinfo.category.hud": "HUD",

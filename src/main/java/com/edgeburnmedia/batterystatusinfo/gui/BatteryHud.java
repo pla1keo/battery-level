@@ -40,54 +40,33 @@ public class BatteryHud {
         int textWidth = client.font.width(text);
         int textHeight = client.font.lineHeight;
 
-        switch (position) {
-            case TOP_LEFT -> {
-                drawContext.blit(RenderPipelines.GUI_TEXTURED, texture, 1, 0, 0, 0, SCALE, SCALE, SCALE, SCALE);
-                drawContext.text(client.font, text, 23, 7, PERCENT_COLOUR);
-            }
-            case TOP_RIGHT -> {
-                drawContext.blit(
-                        RenderPipelines.GUI_TEXTURED,
-                        texture,
-                        windowWidth - SCALE - 1,
-                        0,
-                        0,
-                        0,
-                        SCALE,
-                        SCALE,
-                        SCALE,
-                        SCALE);
-                drawContext.text(client.font, text, windowWidth - textWidth - 23, 7, PERCENT_COLOUR);
-            }
-            case BOTTOM_LEFT -> {
-                drawContext.blit(
-                        RenderPipelines.GUI_TEXTURED,
-                        texture,
-                        1,
-                        windowHeight - SCALE - 1,
-                        0,
-                        0,
-                        SCALE,
-                        SCALE,
-                        SCALE,
-                        SCALE);
-                drawContext.text(client.font, text, 23, windowHeight - textHeight - 6, PERCENT_COLOUR);
-            }
-            case BOTTOM_RIGHT -> {
-                drawContext.blit(
-                        RenderPipelines.GUI_TEXTURED,
-                        texture,
-                        windowWidth - SCALE - 1,
-                        windowHeight - SCALE - 1,
-                        0,
-                        0,
-                        SCALE,
-                        SCALE,
-                        SCALE,
-                        SCALE);
-                drawContext.text(
-                        client.font, text, windowWidth - textWidth - 23, windowHeight - textHeight - 6, PERCENT_COLOUR);
-            }
+        int x = getX(windowWidth, textWidth, position, config);
+        int y = getY(windowHeight, position, config);
+        drawContext.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, SCALE, SCALE, SCALE, SCALE);
+        drawContext.text(client.font, text, x + 22, y + (SCALE - textHeight) / 2, PERCENT_COLOUR);
+    }
+
+    public static int getX(
+            int screenWidth, int textWidth, BatteryStatusInfoConfig.Position position, BatteryStatusInfoConfig config) {
+        int maxX = Math.max(0, screenWidth - SCALE - 2 - textWidth);
+        if (config.hasCustomHudPosition()) {
+            return (int) Math.round(config.getHudX() * maxX);
         }
+        return switch (position) {
+            case TOP_LEFT, BOTTOM_LEFT -> 1;
+            case TOP_RIGHT, BOTTOM_RIGHT -> maxX;
+        };
+    }
+
+    public static int getY(
+            int screenHeight, BatteryStatusInfoConfig.Position position, BatteryStatusInfoConfig config) {
+        int maxY = Math.max(0, screenHeight - SCALE - 1);
+        if (config.hasCustomHudPosition()) {
+            return (int) Math.round(config.getHudY() * maxY);
+        }
+        return switch (position) {
+            case TOP_LEFT, TOP_RIGHT -> 0;
+            case BOTTOM_LEFT, BOTTOM_RIGHT -> maxY;
+        };
     }
 }

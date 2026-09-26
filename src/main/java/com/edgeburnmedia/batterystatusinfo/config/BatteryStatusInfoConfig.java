@@ -39,6 +39,14 @@ public class BatteryStatusInfoConfig implements ConfigData {
     @ConfigEntry.Category("hud")
     @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
     Position position = Position.BOTTOM_LEFT;
+
+    @ConfigEntry.Category("hud")
+    @ConfigEntry.Gui.Excluded
+    double hudX = -1.0d;
+
+    @ConfigEntry.Category("hud")
+    @ConfigEntry.Gui.Excluded
+    double hudY = -1.0d;
     //	@ConfigEntry.Category("hud")
     //	int hudIconScale = 16;
 
@@ -48,6 +56,23 @@ public class BatteryStatusInfoConfig implements ConfigData {
 
     public Position getPosition() {
         return position;
+    }
+
+    public boolean hasCustomHudPosition() {
+        return hudX >= 0.0d && hudY >= 0.0d;
+    }
+
+    public double getHudX() {
+        return hudX;
+    }
+
+    public double getHudY() {
+        return hudY;
+    }
+
+    public void setHudPosition(double x, double y) {
+        hudX = Math.max(0.0d, Math.min(1.0d, x));
+        hudY = Math.max(0.0d, Math.min(1.0d, y));
     }
 
     public boolean isShowHud() {

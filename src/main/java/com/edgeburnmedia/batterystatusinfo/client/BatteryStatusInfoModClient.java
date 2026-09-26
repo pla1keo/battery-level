@@ -8,6 +8,7 @@ import com.edgeburnmedia.batterystatusinfo.BatteryStatus;
 import com.edgeburnmedia.batterystatusinfo.BatteryStatusInfoMod;
 import com.edgeburnmedia.batterystatusinfo.config.BatteryStatusInfoConfig;
 import com.edgeburnmedia.batterystatusinfo.gui.BatteryHud;
+import com.edgeburnmedia.batterystatusinfo.gui.BatteryHudPositionScreen;
 import com.edgeburnmedia.batterystatusinfo.toast.BatteryAlertToast;
 import com.edgeburnmedia.batterystatusinfo.utils.BatteryUtils;
 import com.mojang.brigadier.Command;
@@ -24,6 +25,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
@@ -76,6 +78,10 @@ public class BatteryStatusInfoModClient implements ClientModInitializer {
 
         // Register debug command
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+            dispatcher.register(ClientCommands.literal("bsiedit").executes(context -> {
+                Minecraft.getInstance().setScreenAndShow(new BatteryHudPositionScreen(config));
+                return Command.SINGLE_SUCCESS;
+            }));
             dispatcher.register(ClientCommands.literal("bsidebug").executes(context -> {
                 context.getSource().sendFeedback(Component.nullToEmpty(BatteryUtils.getDebugInfo()));
                 return 0;
