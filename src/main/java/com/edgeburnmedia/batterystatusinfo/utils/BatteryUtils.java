@@ -2,6 +2,7 @@ package com.edgeburnmedia.batterystatusinfo.utils;
 
 import com.edgeburnmedia.batterystatusinfo.BatteryStatus;
 import com.edgeburnmedia.batterystatusinfo.client.BatteryStatusInfoModClient;
+import java.util.List;
 import net.minecraft.resources.Identifier;
 import oshi.SystemInfo;
 import oshi.hardware.PowerSource;
@@ -25,7 +26,17 @@ public final class BatteryUtils {
      * @return the battery percentage as a double between 0 and 1
      */
     public static double getCharge() {
-        return SYSTEM_INFO.getHardware().getPowerSources().get(0).getRemainingCapacityPercent();
+        List<PowerSource> powerSources = SYSTEM_INFO.getHardware().getPowerSources();
+        if (powerSources.isEmpty()) {
+            return Double.NaN;
+        }
+
+        double charge = powerSources.get(0).getRemainingCapacityPercent();
+        // OSHI specifies a 0-1 fraction, but some platform APIs return 0-100.
+        if (charge > 1.0d && charge <= 100.0d) {
+            charge /= 100.0d;
+        }
+        return Double.isFinite(charge) && charge >= 0.0d && charge <= 1.0d ? charge : Double.NaN;
     }
 
     /**
@@ -35,7 +46,8 @@ public final class BatteryUtils {
      * @see PowerSource#isCharging()
      */
     public static boolean isCharging() {
-        return SYSTEM_INFO.getHardware().getPowerSources().get(0).isCharging();
+        List<PowerSource> powerSources = SYSTEM_INFO.getHardware().getPowerSources();
+        return !powerSources.isEmpty() && powerSources.get(0).isCharging();
     }
 
     /**
@@ -45,7 +57,8 @@ public final class BatteryUtils {
      * @see PowerSource#getTimeRemainingEstimated()
      */
     public static double getTimeRemaining() {
-        return SYSTEM_INFO.getHardware().getPowerSources().get(0).getTimeRemainingEstimated();
+        List<PowerSource> powerSources = SYSTEM_INFO.getHardware().getPowerSources();
+        return powerSources.isEmpty() ? -1.0d : powerSources.get(0).getTimeRemainingEstimated();
     }
 
     /**
